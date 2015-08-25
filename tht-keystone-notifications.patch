@@ -1,0 +1,132 @@
+From 841cc5ab83889b3cdc93ad1cb90cb049aa295bfc Mon Sep 17 00:00:00 2001
+From: root <root@instack.localdomain>
+Date: Tue, 25 Aug 2015 10:31:10 -0400
+Subject: [PATCH] TEMPORARY backport of keystone notifications
+
+---
+ controller.yaml                | 10 ++++++++++
+ overcloud-without-mergepy.yaml | 12 ++++++++++++
+ puppet/all-nodes-config.yaml   |  1 +
+ puppet/controller-puppet.yaml  | 18 ++++++++++++++++++
+ puppet/hieradata/common.yaml   |  2 ++
+ 5 files changed, 43 insertions(+)
+
+diff --git a/controller.yaml b/controller.yaml
+index 5e3f43c..3ab6dd5 100644
+--- a/controller.yaml
++++ b/controller.yaml
+@@ -248,6 +248,16 @@ parameters:
+     description: Keystone key for signing tokens.
+     type: string
+     hidden: true
++  KeystoneNotificationDriver:
++    description: Comma-separated list of Oslo notification drivers used by Keystone
++    default: ['messaging']
++    type: comma_delimited_list
++  KeystoneNotificationFormat:
++    description: The Keystone notification format
++    default: 'basic'
++    type: string
++    constraints:
++      - allowed_values: [ 'basic', 'cadf' ]
+   MysqlClusterUniquePart:
+     description: A unique identifier of the MySQL cluster the controller is in.
+     type: string
+diff --git a/overcloud-without-mergepy.yaml b/overcloud-without-mergepy.yaml
+index 58020d8..62ef2df 100644
+--- a/overcloud-without-mergepy.yaml
++++ b/overcloud-without-mergepy.yaml
+@@ -448,6 +448,16 @@ parameters:
+     description: Keystone key for signing tokens.
+     type: string
+     hidden: true
++  KeystoneNotificationDriver:
++    description: Comma-separated list of Oslo notification drivers used by Keystone
++    default: ['messaging']
++    type: comma_delimited_list
++  KeystoneNotificationFormat:
++    description: The Keystone notification format
++    default: 'basic'
++    type: string
++    constraints:
++      - allowed_values: [ 'basic', 'cadf' ]
+   MysqlInnodbBufferPoolSize:
+     description: >
+         Specifies the size of the buffer pool in megabytes. Setting to
+@@ -787,6 +797,8 @@ resources:
+           KeystoneSigningKey: {get_param: KeystoneSigningKey}
+           KeystoneSSLCertificate: {get_param: KeystoneSSLCertificate}
+           KeystoneSSLCertificateKey: {get_param: KeystoneSSLCertificateKey}
++          KeystoneNotificationDriver: {get_param: KeystoneNotificationDriver}
++          KeystoneNotificationFormat: {get_param: KeystoneNotificationFormat}
+           MysqlClusterUniquePart: {get_attr: [MysqlClusterUniquePart, value]}
+           MysqlInnodbBufferPoolSize: {get_param: MysqlInnodbBufferPoolSize}
+           MysqlMaxConnections: {get_param: MysqlMaxConnections}
+diff --git a/puppet/all-nodes-config.yaml b/puppet/all-nodes-config.yaml
+index 060f4c8..2bc519b 100644
+--- a/puppet/all-nodes-config.yaml
++++ b/puppet/all-nodes-config.yaml
+@@ -238,6 +238,7 @@ resources:
+                 heat::rabbit_hosts: *rabbit_nodes_array
+                 neutron::rabbit_hosts: *rabbit_nodes_array
+                 nova::rabbit_hosts: *rabbit_nodes_array
++                keystone::rabbit_hosts: *rabbit_nodes_array
+ 
+ outputs:
+   config_id:
+diff --git a/puppet/controller-puppet.yaml b/puppet/controller-puppet.yaml
+index 87fcc85..a8e9fa8 100644
+--- a/puppet/controller-puppet.yaml
++++ b/puppet/controller-puppet.yaml
+@@ -253,6 +253,16 @@ parameters:
+     description: Keystone key for signing tokens.
+     type: string
+     hidden: true
++  KeystoneNotificationDriver:
++    description: Comma-separated list of Oslo notification drivers used by Keystone
++    default: ['messaging']
++    type: comma_delimited_list
++  KeystoneNotificationFormat:
++    description: The Keystone notification format
++    default: 'basic'
++    type: string
++    constraints:
++      - allowed_values: [ 'basic', 'cadf' ]
+   MysqlClusterUniquePart:
+     description: A unique identifier of the MySQL cluster the controller is in.
+     type: string
+@@ -697,6 +707,8 @@ resources:
+         keystone_signing_certificate: {get_param: KeystoneSigningCertificate}
+         keystone_ssl_certificate: {get_param: KeystoneSSLCertificate}
+         keystone_ssl_certificate_key: {get_param: KeystoneSSLCertificateKey}
++        keystone_notification_driver: {get_param: KeystoneNotificationDriver}
++        keystone_notification_format: {get_param: KeystoneNotificationFormat}
+         keystone_dsn:
+           list_join:
+             - ''
+@@ -1021,6 +1033,12 @@ resources:
+                 keystone::public_bind_host: {get_input: keystone_public_api_network}
+                 keystone::admin_bind_host: {get_input: keystone_admin_api_network}
+                 keystone::debug: {get_input: debug}
++                keystone::rabbit_userid: {get_input: rabbit_username}
++                keystone::rabbit_password: {get_input: rabbit_password}
++                keystone::rabbit_use_ssl: {get_input: rabbit_client_use_ssl}
++                keystone::rabbit_port: {get_input: rabbit_client_port}
++                keystone::notification_driver: {get_input: keystone_notification_driver}
++                keystone::notification_format: {get_input: keystone_notification_format}
+                 # MongoDB
+                 mongodb::server::bind_ip: {get_input: mongo_db_network}
+                 # MySQL
+diff --git a/puppet/hieradata/common.yaml b/puppet/hieradata/common.yaml
+index 272a668..23e2ae1 100644
+--- a/puppet/hieradata/common.yaml
++++ b/puppet/hieradata/common.yaml
+@@ -27,3 +27,5 @@ sysctl_settings:
+     value: 5
+   net.ipv4.tcp_keepalive_time:
+     value: 5
++
++keystone::rabbit_heartbeat_timeout_threshold: 60
+-- 
+1.8.3.1
+
