@@ -28,10 +28,16 @@ if [ ! -e tht-mechanism-drivers.patch ]; then
     popd
 fi
 
+if [ ! -e tht-keystone-notifications.patch ]; then
+    # gotta fetch a specifically crafted patch due to merge conflicts
+    curl -o tht-keystone-notifications.patch https://gist.githubusercontent.com/jistr/2575b78058fed8be36d9/raw/4242704fc72a7c34fed1bc1e64d2c230e96c524d/tht-keystone-notifications.patch
+fi
+
 echo "Patches downloaded, inspect them if you wish, then press enter to continue"
 read
 
 pushd /usr/share/openstack-tripleo-heat-templates
 patch -p1 < "$DIR/tht-bigswitch.patch"
 patch -p1 < "$DIR/tht-mechanism-drivers.patch"
+patch -p1 < "$DIR/tht-keystone-notifications.patch"
 popd
