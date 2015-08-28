@@ -1,0 +1,10 @@
+resource_registry:
+  OS::TripleO::ControllerExtraConfigPre: ../puppet/extraconfig/pre_deploy/controller/neutron-bigswitch.yaml
+
+parameters:
+  ExtraConfig:
+    neutron_ovs_use_veth: true
+
+parameter_defaults:
+  NeutronBigswitchRestproxyServers: 192.0.2.100:8000
+  NeutronBigswitchRestproxyServerAuth: admin:passwd
