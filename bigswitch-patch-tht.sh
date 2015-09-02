@@ -12,6 +12,13 @@ cd bigswitch-patch
 
 DIR=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd )
 
+if [ ! -e tht-extraconfig.patch ]; then
+    git clone https://github.com/openstack/tripleo-heat-templates || true
+    pushd tripleo-heat-templates
+    git format-patch -1 --stdout 71e9426f195cf3c17fc11adf17f14d41caa7cf30 > ../tht-extraconfig.patch
+    popd
+fi
+
 if [ ! -e tht-bigswitch.patch ]; then
     # OpenStack gerrit won't allow direct patch download it seems
     git clone https://github.com/openstack/tripleo-heat-templates || true
@@ -37,6 +44,7 @@ echo "Patches downloaded, inspect them if you wish, then press enter to continue
 read
 
 pushd /usr/share/openstack-tripleo-heat-templates
+patch -p1 < "$DIR/tht-extraconfig.patch"
 patch -p1 < "$DIR/tht-bigswitch.patch"
 patch -p1 < "$DIR/tht-mechanism-drivers.patch"
 patch -p1 < "$DIR/tht-keystone-notifications.patch"
