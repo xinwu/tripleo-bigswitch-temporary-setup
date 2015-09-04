@@ -38,7 +38,7 @@ if [ ! -e python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm ]; then
 fi
 
 if [ ! -e openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm ]; then
-    wget https://kojipkgs.fedoraproject.org//packages/python-networking-bigswitch/2015.1.37/1.fc24/noarch/openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm -O openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm
+    wget --no-check-certificate https://kojipkgs.fedoraproject.org//packages/python-networking-bigswitch/2015.1.37/1.fc24/noarch/openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm -O openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm
 fi
 
 # virt-customize for package install:
