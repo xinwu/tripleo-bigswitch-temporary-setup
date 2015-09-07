@@ -23,7 +23,7 @@ if [ ! -e tht-bigswitch.patch ]; then
     # OpenStack gerrit won't allow direct patch download it seems
     git clone https://github.com/openstack/tripleo-heat-templates || true
     pushd tripleo-heat-templates
-    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/42/213142/5 && git format-patch -1 --stdout FETCH_HEAD > ../tht-bigswitch.patch
+    git fetch https://review.openstack.org/openstack/tripleo-heat-templates refs/changes/42/213142/6 && git format-patch -1 --stdout FETCH_HEAD > ../tht-bigswitch.patch
     popd
 fi
 
