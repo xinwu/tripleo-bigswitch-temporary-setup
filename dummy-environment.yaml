@@ -1,9 +1,10 @@
 resource_registry:
-  OS::TripleO::ControllerExtraConfigPre: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/pre_deploy/controller/neutron-bigswitch.yaml
+  OS::TripleO::ControllerExtraConfigPre: /usr/share/openstack-tripleo-heat-templates/puppet/extraconfig/pre_deploy/controller/neutron-ml2-bigswitch.yaml
 
 parameters:
-  ExtraConfig:
+  controllerExtraConfig:
     neutron_ovs_use_veth: true
+  NeutronMechanismDrivers: openvswitch,bsn_ml2
 
 parameter_defaults:
   NeutronBigswitchRestproxyServers: 192.0.2.100:8000
