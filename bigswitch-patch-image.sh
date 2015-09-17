@@ -33,19 +33,19 @@ sudo -u stack virt-customize -a $IMAGE_PATH \
 
 # lets also add the package installs here
 # get the rpms:
-if [ ! -e python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm ]; then
-    wget --no-check-certificate https://kojipkgs.fedoraproject.org//packages/python-networking-bigswitch/2015.1.37/1.fc24/noarch/python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm -O python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm
+if [ ! -e python-networking-bigswitch-2015.1.38-1.el7.centos.noarch.rpm ]; then
+    wget --no-check-certificate https://bigswitch.box.com/shared/static/odqnucsa9j9puydll14yzgozbfutywv3.rpm -O python-networking-bigswitch-2015.1.38-1.el7.centos.noarch.rpm
 fi
 
-if [ ! -e openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm ]; then
-    wget --no-check-certificate https://kojipkgs.fedoraproject.org//packages/python-networking-bigswitch/2015.1.37/1.fc24/noarch/openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm -O openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm
+if [ ! -e openstack-neutron-bigswitch-lldp-2015.1.38-1.el7.centos.noarch.rpm ]; then
+    wget --no-check-certificate https://bigswitch.box.com/shared/static/x468wm8hm27bollzixue4qv06zma8r2y.rpm -O openstack-neutron-bigswitch-lldp-2015.1.38-1.el7.centos.noarch.rpm
 fi
 
 # virt-customize for package install:
 sudo -u stack virt-customize -a $IMAGE_PATH \
-    --upload python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm:/root/python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm  \
-    --upload openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm:/root/openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm  \
-    --firstboot-command "rpm -ivh /root/python-networking-bigswitch-2015.1.37-1.fc24.noarch.rpm" \
-    --firstboot-command "rpm -ivh /root/openstack-neutron-bigswitch-lldp-2015.1.37-1.fc24.noarch.rpm" \
+    --upload python-networking-bigswitch-2015.1.38-1.el7.centos.noarch.rpm:/root/python-networking-bigswitch-2015.1.38-1.el7.centos.noarch.rpm  \
+    --upload openstack-neutron-bigswitch-lldp-2015.1.38-1.el7.centos.noarch.rpm:/root/openstack-neutron-bigswitch-lldp-2015.1.38-1.el7.centos.noarch.rpm  \
+    --firstboot-command "rpm -ivh /root/python-networking-bigswitch-2015.1.38-1.el7.centos.noarch.rpm" \
+    --firstboot-command "rpm -ivh /root/openstack-neutron-bigswitch-lldp-2015.1.38-1.el7.centos.noarch.rpm" \
     --firstboot-command "systemctl enable neutron-bsn-lldp.service" \
     --firstboot-command "service neutron-bsn-lldp start"
